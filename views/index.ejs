@@ -1,18 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <%- include('inc/head.ejs') -%>
-
-  <body>
-    <div class="gtco-loader"></div>
-
-    <div id="page">
-      <%- include('inc/header-menu.ejs') -%> <%- include('inc/header-index.ejs')
-      -%> <%- include('inc/content/menus.ejs') -%> <%-
-      include('inc/content/services.ejs') -%> <%-
-      include('inc/content/text.ejs') -%> <%- include('inc/content/facts.ejs')
-      -%> <%- include('inc/content/subscribe.ejs') -%> <%- include('inc/footer')
-      -%>
-    </div>
-    <%- include('inc/footer-gototop') -%> <%- include('inc/footer-scripts') -%>
-  </body>
-</html>
+<%- include('inc/page-header.ejs') -%> <%- include('inc/content/menus.ejs') -%>
+<%- include('inc/content/services.ejs') -%> <%- include('inc/content/text.ejs')
+-%> <%- include('inc/content/facts.ejs') -%> <%-
+include('inc/content/subscribe.ejs') -%> <%- include('inc/page-footer.ejs') -%>
