@@ -7,7 +7,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  menus.getMenus().then((results) => {
+  menus.getMenus().then(results => {
     res.render("index", {
       title: "Restaurante Saboroso!",
       menus: results,
@@ -47,10 +47,9 @@ router.post('/contacts', function (req, res, next) {
 });
 
 // rota para pagina menus
-router.get("/menus", function (req, res, next) {
+router.get('/menus', function (req, res, next) {
   menus.getMenus().then(results => {
     res.render('menus', {
-
       title: 'Menu - Restaurante Saboroso!',
       background: 'images/img_bg_1.jpg',
       h1: 'Saboreie nosso menu!',
