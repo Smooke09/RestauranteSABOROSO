@@ -12,27 +12,28 @@ var adminRouter = require('./routes/admin');
 var app = express();
 
 // bug do users 
-app.use(function (req, res, next) {
+// app.use(function (req, res, next) {
 
-  if (req.method === 'POST') {
+//   let contentType = req.headers["content-type"];
+//   if (req.method === 'POST' && contentType.indexOf('multipart/form-data;') > -1) {
+//     var form = formidable.IncomingForm({
+//       uploadDir: path.join(__dirname, "/public/images"),
+//       keepExtensions: true
+//     });
 
-    var form = formidable.IncomingForm({
-      uploadDir: path.join(__dirname, "/public/images"),
-      keepExtensions: true
-    });
+//     form.parse(req, function (err, fields, files) {
 
-    form.parse(req, function (err, fields, files) {
+//       req.fields = fields;
+//       req.files = files;
 
-      req.body = fields;
-      req.fields = fields;
-      req.files = files;
+//       next();
 
-      next();
-    });
+//     });
+//   } else {
+//     next();
+//   }
 
-  } else
-    next();
-});
+// });
 
 // view
 app.set('views', path.join(__dirname, 'views'));
