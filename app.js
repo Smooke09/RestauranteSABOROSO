@@ -11,42 +11,42 @@ var adminRouter = require('./routes/admin');
 
 var app = express();
 
-// app.use(function (req, res, next) {
+app.use(function (req, res, next) {
 
-//   if (req.method === 'POST') {
+  if (req.method === 'POST') {
 
-//     var form = formidable.IncomingForm({
-//       uploadDir: path.join(__dirname, '/public/images'),
-//       keepExtensions: true
-//     });
+    var form = formidable.IncomingForm({
+      uploadDir: path.join(__dirname, '/public/images'),
+      keepExtensions: true
+    });
 
-//     form.parse(req, function (err, fields, files) {
+    form.parse(req, function (err, fields, files) {
 
-//       req.body = fields;
-//       req.fields = fields;
-//       req.files = files;
+      req.body = fields;
+      req.fields = fields;
+      req.files = files;
 
-//       next()
-//     });
-//   } else {
-//     next();
-//   }
-// });
+      next()
+    });
+  } else {
+    next();
+  }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // config do redis
-// app.use(session({
-//   store: new RedisStore({
-//     host: '127.0.0.1',
-//     port: '6379'
-//   }),
-//   secret: 'password',
-//   resave: true,
-//   saveUninitialized: true
-// }));
+app.use(session({
+  store: new RedisStore({
+    host: '127.0.0.1',
+    port: '6379'
+  }),
+  secret: 'password',
+  resave: true,
+  saveUninitialized: true
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
