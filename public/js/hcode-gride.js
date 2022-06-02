@@ -1,69 +1,85 @@
 class HcodeGrid {
 
     constructor(configs) {
-
         configs.listeners = Object.assign({
+
             afterUpdateClick: (e) => {
-                $('#modal-update').modal('show')
+                $('#modal-update').modal('show');
+            },
+            afterDeleteClick: (e) => {
+                window.location.reload();
+
+            },
+            afterFormCreate: (e) => {
+                window.location.reload();
+            },
+            afterFormUpdate: (e) => {
+                window.location.reload();
+            },
+            afterFormCreateError: (e) => {
+                alert('Nao foi possivel enviar o formulário');
+            },
+            afterFormUpdateError: (e) => {
+                alert('Nao foi possivel enviar o formulário');
+
             }
         }, configs.listeners)
 
-        this.options = Object.assign({}, {
+        this.configs = Object.assign({}, {
             formCreate: '#modal-create form',
             formUpdate: '#modal-update form',
             btnUpdate: '.btn-update',
             btnDelete: '.btn-delete',
-        }, configs)
+        }, configs);
 
-
-        this.initForms();
         this.initButtons();
-    }
-
-    initForms() {
-
-        this.formCreate = document.querySelector(this.options.formCreate);
-
-        this.formCreate.save().then(json => {
-
-            window.location.reload();
-
-        }).catch(err => {
-
-            console.log(err)
-        });
-
-        this.formUpdate = document.querySelector(this.options.formUpdate);
-
-        this.formUpdate.save().then(json => {
-
-            window.location.reload();
-
-        }).catch(err => {
-
-            console.log(err)
-        });
+        this.initForms();
 
     }
 
     fireEvent(name, args) {
 
-        if (typeof this.options.listeners[name] === 'function') this.options.listeners[name].apply(this, args)
+        if (typeof this.configs.listeners[name] === 'function') this.configs.listeners[name].apply(this, args);
     }
 
+    initForms() {
+
+        this.formCreate = document.querySelector(this.configs.formCreate);
+
+        this.formCreate.save().then(json => {
+
+            this.fireEvent('afterFormCreate');
+
+        }).catch(err => {
+            this.fireEvent('afterFormCreateError');
+
+
+        });
+
+        //Update
+        this.formUpdate = document.querySelector(this.configs.formUpdate);
+
+        this.formUpdate.save().then(json => {
+
+            this.fireEvent('afterFormUpdate');
+
+        }).catch(err => {
+
+            this.fireEvent('afterFormUpdateError');
+        });
+    }
 
     initButtons() {
 
-        [...document.querySelectorAll(this.options.btnUpdate)].forEach(btn => {
+        // update
+        [...document.querySelectorAll(this.configs.btnUpdate)].forEach(btn => {
+
 
             btn.addEventListener('click', e => {
 
                 this.fireEvent('beforeUpdateClick', [e]);
 
-                let tr = e.path.find(el => {
-
-                    return (el.tagName.toUpperCase() === 'TR')
-                });
+                let tr = e.srcElement.parentElement.parentElement;
 
                 let data = JSON.parse(tr.dataset.row);
 
@@ -72,9 +88,11 @@ class HcodeGrid {
                     let input = this.formUpdate.querySelector(`[name=${name}]`);
 
                     switch (name) {
+
                         case 'date':
+                            //moment(data[name]).format('YYYY-MM-DD');
                             if (input) input.value = moment(data[name]).format('YYYY-MM-DD');
-                            break
+                            break;
 
                         default:
                             if (input) input.value = data[name];
@@ -82,37 +100,33 @@ class HcodeGrid {
                     }
                 }
                 this.fireEvent('afterUpdateClick', [e]);
-
-
             });
-
         });
 
-        [...document.querySelectorAll(this.options.btnDelete)].forEach(btn => {
+        // delete
+        [...document.querySelectorAll(this.configs.btnDelete)].forEach(btn => {
 
             btn.addEventListener('click', e => {
 
-                let tr = e.path.find(el => {
+                this.fireEvent('beforeDeleteClick');
 
-                    return (el.tagName.toUpperCase() === 'TR')
-                });
+                let tr = e.srcElement.parentElement.parentElement;
 
                 let data = JSON.parse(tr.dataset.row);
 
-                if (confirm(eval('`' + this.options.deleteMsg + '`'))) {
+                if (confirm(eval('`' + this.configs.deleteMsg + '`'))) {
 
-                    fetch(eval('`' + this.options.deleteUrl + '`'), {
+                    fetch(eval('`' + this.configs.deleteUrl + '`'), {
                         method: 'DELETE'
-                    }).then(response => response.json()).then(json => {
+                    })
+                        .then(response => response.json())
+                        .then(json => {
 
-                        window.location.reload();
-
-                    });
+                            this.fireEvent('afterDeleteClick');
+                        })
                 }
+
             });
         });
-
-
     }
-
 }
