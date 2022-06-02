@@ -1,7 +1,8 @@
 let conn = require('./db');
-let path = require('path')
+let path = require('path');
 
 module.exports = {
+
     getMenus() {
 
         return new Promise((resolve, reject) => {
@@ -9,6 +10,7 @@ module.exports = {
             conn.query(`
             SELECT * FROM tb_menus ORDER BY title`,
                 (err, results) => {
+
                     if (err)
                         reject(err);
                     else
@@ -29,18 +31,16 @@ module.exports = {
                 fields.description,
                 fields.price
             ];
-
+            console.log(files.photo.name);
             if (files.photo.name) {
 
                 queryPhoto = ',photo = ?';
-
                 params.push(fields.photo);
             }
 
             if (parseInt(fields.id) > 0) {
 
-                params.push(fields.id);
-
+                params.push(fields.id)
 
                 query = `
                     UPDATE tb_menus
@@ -48,20 +48,23 @@ module.exports = {
                         description = ?,
                         price = ?
                         ${queryPhoto}
-                    WHERE id = ?    
-                `;
+                    WHERE id = ? `;
+
+
+
             } else {
-                if (!files.photo.name) {
+
+                if (!files.photo.name)
                     reject('Envie a foto do prato');
-                }
+
                 query = `
                 INSERT INTO tb_menus (title, description, price, photo)
-                VALUES (?, ?, ?, ?)
-                `;
+                VALUES (?, ?, ?, ?)`;
+
             }
 
             conn.query(query, params, (err, results) => {
-
+                console.log(err);
                 if (err)
                     reject(err);
                 else
@@ -75,17 +78,15 @@ module.exports = {
         return new Promise((resolve, reject) => {
 
             conn.query(`
-                DELETE FROM tb_menus WHERE id = ?
-            `, [
+            DELETE FROM tb_menus WHERE id = ?`, [
                 id
             ], (err, results) => {
 
-                if (err) {
+                if (err)
                     reject(err);
-                } else {
+                else
                     resolve(results);
-                }
-            });
-        });
+            })
+        })
     }
 }
