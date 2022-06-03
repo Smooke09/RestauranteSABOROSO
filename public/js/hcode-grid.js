@@ -86,6 +86,7 @@ class HcodeGrid {
         }
     }
 
+
     btnUpdateClick(e) {
 
         this.fireEvent('beforeUpdateClick', [e])
@@ -126,6 +127,7 @@ class HcodeGrid {
                 });
         }
     }
+
 
     initButtons() {
 
