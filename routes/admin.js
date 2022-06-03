@@ -5,7 +5,7 @@ var menus = require("./../inc/menus");
 var reservations = require("./../inc/reservations.js");
 var moment = require("moment");
 var router = express.Router();
-
+var contacts = require("./../inc/contacts.js")
 moment.locale("pt-BR");
 
 // se fica dando pau do "User" comenta a linha
@@ -69,10 +69,23 @@ router.get("/login", function (req, res, next) {
     users.render(req, res, null)
 });
 
-router.get("/contacts", function (req, res, next) {
+router.get('/contacts', function (req, res, next) {
 
-    res.render("admin/contacts", admin.getParams(req))
+    contacts.getContacts().then(data => {
+        res.render('admin/contacts', admin.getParams(req, {
+            data
+        }));
+    });
 });
+
+router.delete('/contacts/:id', function (req, res, netx) {
+
+    contacts.delete(req.params.id).the(results => {
+        res.send(results);
+    }).catch(err => {
+        res.send(err);
+    })
+})
 
 router.get("/emails", function (req, res, next) {
 
