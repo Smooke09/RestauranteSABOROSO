@@ -7,11 +7,12 @@ var moment = require('moment');
 var router = express.Router();
 var contacts = require('./../inc/contacts');
 var emails = require('./../inc/emails');
+const { query } = require('../inc/db');
 
 
 moment.locale('pt-BR');
 
-// -- middlewares --
+//  middlewares 
 
 router.use(function (req, res, next) {
 
@@ -22,14 +23,14 @@ router.use(function (req, res, next) {
 
 });
 
-// exibindo menus lateral
+
 router.use(function (req, res, next) {
 
     req.menus = admin.getMenus(req);
     next();
 });
 
-// -- routes --
+//   routes 
 
 router.get('/logout', function (req, res, next) {
 
@@ -161,15 +162,22 @@ router.delete('/menus/:id', function (req, res, next) {
 })
 
 //  reservations 
-
 router.get('/reservations', function (req, res, next) {
 
-    reservations.getReservations().then(data => {
+    let start = (req.query.start) ? req.query.start : moment().subtract(1, "year").format("YYYY-MM-DD");
+
+    let end = (req.query.end) ? req.query.end : moment().format("YYYY-MM-DD");
+
+    reservations.getReservations(req).then(pag => {
 
         res.render('admin/reservations', admin.getParams(req, {
-            date: {},
-            data,
-            moment
+            date: {
+                start,
+                end
+            },
+            data: pag.data,
+            moment,
+            links: pag.links
         }));
     })
 });
